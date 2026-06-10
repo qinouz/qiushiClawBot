@@ -171,6 +171,7 @@ async function sendClawBot(config, target, message, contextToken = "") {
   let lastResult = null;
 
   for (let attempt = 0; attempt < config.sendMaxRetries; attempt += 1) {
+    const usedContextToken = Boolean(tokenForContext);
     const msg = {
       from_user_id: "",
       to_user_id: toUserId,
@@ -203,10 +204,16 @@ async function sendClawBot(config, target, message, contextToken = "") {
     );
 
     if (isSuccess(result)) {
+      console.log(
+        `[clawbot:${config.user}] send ok target=${summarizeId(toUserId)} length=${message.length} context=${usedContextToken} attempt=${attempt + 1}`
+      );
       return result;
     }
 
     lastResult = result;
+    console.warn(
+      `[clawbot:${config.user}] send failed target=${summarizeId(toUserId)} length=${message.length} context=${usedContextToken} attempt=${attempt + 1}/${config.sendMaxRetries} result=${JSON.stringify(result)}`
+    );
 
     if (isSessionExpired(result) && tokenForContext) {
       tokenForContext = "";
@@ -332,6 +339,19 @@ function isRateLimited(result) {
 function randomWechatUin() {
   const value = crypto.randomBytes(4).readUInt32BE(0);
   return Buffer.from(String(value), "utf8").toString("base64");
+}
+
+function summarizeId(value) {
+  if (!value) {
+    return "";
+  }
+
+  const text = String(value);
+  if (text.length <= 12) {
+    return text;
+  }
+
+  return `${text.slice(0, 6)}...${text.slice(-6)}`;
 }
 
 function numberEnv(name, defaultValue) {
