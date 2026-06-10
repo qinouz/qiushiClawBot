@@ -3,7 +3,7 @@ import {
   extractClawBotText,
   loadClawBotConfig,
 } from "./client.js";
-import { listKnownUsers, loadUserConfig } from "./users.js";
+import { configuredUsers, listKnownUsers, loadUserConfig } from "./users.js";
 
 export function createClawBotPoller(config = loadClawBotConfig()) {
   const client = createClawBotClient(config);
@@ -16,7 +16,9 @@ export function createClawBotPoller(config = loadClawBotConfig()) {
 }
 
 export function startConfiguredPollers() {
-  for (const entry of listKnownUsers()) {
+  const configured = new Set(configuredUsers());
+
+  for (const entry of listKnownUsers().filter((user) => configured.has(user.user))) {
     if (!entry.bound) {
       console.log(`[clawbot:${entry.user}] skip polling because user is not bound`);
       continue;
