@@ -1,0 +1,6 @@
+**
+!qiushiClawBot/package.json
+!qiushiClawBot/src/**
+!qiushiClawBot/docker/start-all.sh
+!gold/package.json
+!gold/src/**

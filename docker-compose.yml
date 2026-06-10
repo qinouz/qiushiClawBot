@@ -1,0 +1,14 @@
+services:
+  qiushi-clawbot:
+    build: .
+    container_name: qiushi-clawbot
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      HOST: 0.0.0.0
+      CLAWBOT_STATE_DIR: /app/.clawbot/users
+    ports:
+      - "${PORT:-8711}:${PORT:-8711}"
+    volumes:
+      - ./.clawbot:/app/.clawbot

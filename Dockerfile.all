@@ -1,0 +1,22 @@
+FROM node:20-alpine
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+
+COPY --chown=node:node qiushiClawBot/package.json ./qiushiClawBot/package.json
+COPY --chown=node:node qiushiClawBot/src ./qiushiClawBot/src
+COPY --chown=node:node gold/package.json ./gold/package.json
+COPY --chown=node:node gold/src ./gold/src
+COPY --chown=node:node qiushiClawBot/docker/start-all.sh ./start-all.sh
+
+RUN chmod +x ./start-all.sh
+
+USER node
+
+EXPOSE 8711 8787
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=15s --retries=3 \
+  CMD node -e "Promise.all([fetch('http://127.0.0.1:' + (process.env.PORT || 8711) + '/health'), fetch('http://127.0.0.1:' + (process.env.WEB_PORT || 8787) + '/')]).then(([a,b]) => process.exit(a.ok && b.ok ? 0 : 1)).catch(() => process.exit(1))"
+
+CMD ["./start-all.sh"]

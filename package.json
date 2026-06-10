@@ -1,0 +1,21 @@
+{
+  "name": "qiushi-clawbot",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Local webhook adapter for ClawBot/OpenClaw WeChat messages.",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "clawbot:qrcode": "node src/clawbot-listener.js --clawbot-qrcode",
+    "clawbot:confirm": "node src/clawbot-listener.js --clawbot-confirm-setup",
+    "clawbot:setup": "node src/clawbot-listener.js --clawbot-setup",
+    "clawbot:listen": "node src/clawbot-listener.js --clawbot-listen",
+    "clawbot:listen-once": "node src/clawbot-listener.js --clawbot-listen-once",
+    "clawbot:test": "node src/clawbot-listener.js --clawbot-test",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
