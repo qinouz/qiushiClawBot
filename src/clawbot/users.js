@@ -37,9 +37,10 @@ export function listKnownUsers() {
   const fromConfig = configuredUsers();
   const fromFiles = fs.existsSync(stateDir)
     ? fs
-        .readdirSync(stateDir)
-        .filter((name) => name.endsWith(".json"))
-        .map((name) => sanitizeUserName(path.basename(name, ".json")))
+        .readdirSync(stateDir, { withFileTypes: true })
+        // Query journals and backups share this directory but are not user profiles.
+        .filter((entry) => entry.isFile() && /^[a-z0-9_-]+\.json$/i.test(entry.name))
+        .map((entry) => sanitizeUserName(entry.name.slice(0, -5)))
     : [];
 
   return [...new Set([...fromConfig, ...fromFiles])].map((user) => {

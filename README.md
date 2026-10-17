@@ -224,3 +224,10 @@ curl -X POST http://127.0.0.1:8711/send ^
 ```bash
 npm test
 ```
+## 微信查询本事作者更新
+
+在 `.env` 配置 `CREATOR_UPDATES_QUERY_URL=http://127.0.0.1:8851/api/creator-updates/wechat/query`、`CREATOR_UPDATES_USER=me`，并在 `CLAWBOT_USERS` 保留原账号、追加 `me`。查询密钥默认使用 `FORWARDER_SECRET`，应与本事的 `WECHAT_FORWARDER_SECRET` 相同，也可单独设置 `CREATOR_UPDATES_QUERY_SECRET`。
+
+重启后，绑定给 `me` 的微信用户可以发送“查更新”“查更新 dreamfallart”或“dreamfallart 更新了吗”。网关调用本事的作者检查接口，再把结果回复给原发送者；其他账号、其他发送者和普通聊天不进入此查询流程。
+
+指令和回复状态单独保存在用户状态文件旁的 `.creator-queries.json` 文件中。重复消息会去重，回复失败等待 1 分钟重试，重启后复用已经得到的回复。查询等待最多 3 分钟，超时会明确提示后台可能仍在检查。消息发送成功但网络响应丢失时仍可能重复回复。
