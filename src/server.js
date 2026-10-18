@@ -1,7 +1,9 @@
+import { installConsoleTimestamps } from "./logging/console-timestamp.js";
 import { loadEnvFile } from "./config/load-env.js";
 import { createClawBotServer } from "./app.js";
 import { startConfiguredPollers } from "./clawbot/poller.js";
 
+installConsoleTimestamps();
 loadEnvFile();
 
 const DEFAULT_PORT = 8711;
